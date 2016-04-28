@@ -2,6 +2,11 @@
 
 Automatic icon resizing for Cordova. Add `icon.png` to the root folder of your Cordova project and use cordova-icon-gm to automatically resize, copy and configure the icon for all current Android and iOS devices.
 
+### Updates in this Fork:
+It now is cordova 6.1.1 compatible (ios icon paths changed)
+It now supports custom icons paths per platform
+It uses ImageMagic per default
+
 ### Manual usage
 1. `npm install -g cordova-icon-gm`
 2. Place `icon.png` to the root folder of your Cordova project
