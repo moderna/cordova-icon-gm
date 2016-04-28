@@ -4,7 +4,9 @@ Automatic icon resizing for Cordova. Add `icon.png` to the root folder of your C
 
 ### Updates in this Fork:
 It now is cordova 6.1.1 compatible (ios icon paths changed)
+
 It now supports custom icons paths per platform
+
 It uses ImageMagic per default
 
 ### Manual usage
