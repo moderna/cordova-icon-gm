@@ -15,9 +15,11 @@ It uses ImageMagic per default
 3. Run `cordova-icon-gm`.
 
 ### Automated usage
-1. `npm install cordova-icon-gm --save-dev`
+1. Install ImageMagic binaries from http://www.imagemagick.org/script/binary-releases.php
 
-2. Create `my-icon-hook.js`
+2. `npm install cordova-icon-gm --save-dev`
+
+3. Create `my-icon-hook.js`
     ```javascript
     var icon = require('cordova-icon-gm');
     
@@ -26,7 +28,7 @@ It uses ImageMagic per default
     };
     ```
 
-3. Add hook to `config.xml`
+4. Add hook to `config.xml`
     ```xml
     <hook src="my-icon-hook.js" type="after_platform_add" />
     ```
