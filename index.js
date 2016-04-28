@@ -1,6 +1,7 @@
 var fs     = require('fs');
 var xml2js = require('xml2js');
 var gm     = require('gm');
+var imageMagick = gm.subClass({imageMagick: true});
 var colors = require('colors');
 var _      = require('underscore');
 var Q      = require('q');
@@ -18,10 +19,11 @@ var getPlatforms = function (projectName) {
         name : 'ios',
         // TODO: use async fs.exists
         isAdded : fs.existsSync('platforms/ios'),
-        iconsPath : 'platforms/ios/' + projectName + '/Resources/icons/',
+        iconsPath : 'platforms/ios/' + projectName + '/Images.xcassets/AppIcon.appiconset/',
         icons : [
             { name : 'icon-40.png',       size : 40  },
             { name : 'icon-40@2x.png',    size : 80  },
+            { name : 'icon-40@3x.png',    size : 120 },
             { name : 'icon-50.png',       size : 50  },
             { name : 'icon-50@2x.png',    size : 100 },
             { name : 'icon-60.png',       size : 60  },
@@ -31,10 +33,12 @@ var getPlatforms = function (projectName) {
             { name : 'icon-72@2x.png',    size : 144 },
             { name : 'icon-76.png',       size : 76  },
             { name : 'icon-76@2x.png',    size : 152 },
+            { name : 'icon-83.5@2x.png',  size : 167 },
             { name : 'icon-small.png',    size : 29  },
             { name : 'icon-small@2x.png', size : 58  },
+            { name : 'icon-small@3x.png', size : 87  },
             { name : 'icon.png',          size : 57  },
-            { name : 'icon@2x.png',       size : 114 },
+            { name : 'icon@2x.png',       size : 114 }
         ]
     });
     platforms.push({
@@ -42,7 +46,7 @@ var getPlatforms = function (projectName) {
         iconsPath : 'platforms/android/res/',
         isAdded : fs.existsSync('platforms/android'),
         icons : [
-            { name : 'drawable/icon.png',       size : 96 },
+            //{ name : 'drawable/icon.png',       size : 96 },
             { name : 'drawable-hdpi/icon.png',  size : 72 },
             { name : 'drawable-ldpi/icon.png',  size : 36 },
             { name : 'drawable-mdpi/icon.png',  size : 48 },
@@ -61,18 +65,19 @@ var getPlatforms = function (projectName) {
  */
 var settings = {};
 settings.CONFIG_FILE = 'config.xml';
-settings.ICON_FILE   = 'icon.png';
+// custom icon path added
+settings.ICON_FILE   = 'res/3_used_by_cordova/icon/[platform]/icon.png';
 
 /**
  * @var {Object} console utils
  */
 var display = {};
 display.success = function (str) {
-    str = '✓  '.green + str;
+    str = 'OK  '.green + str;
     console.log('  ' + str);
 };
 display.error = function (str) {
-    str = '✗  '.red + str;
+    str = 'ERROR  '.red + str;
     console.log('  ' + str);
 };
 display.header = function (str) {
@@ -115,8 +120,11 @@ var generateIcon = function (platform, icon) {
     var deferred = Q.defer();
     var file = platform.iconsPath + icon.name;
 
-    gm(settings.ICON_FILE)
-      .resize(icon.size, icon.size)
+    // replace "[platform]" in icon path
+    var iconFilePath = settings.ICON_FILE.replace("[platform]", platform.name);
+
+    imageMagick(iconFilePath)
+      .resizeExact(icon.size, icon.size)
       .write(file, function(err) {
         if (err) {
           deferred.reject(err);
@@ -193,18 +201,44 @@ var atLeastOnePlatformFound = function () {
 };
 
 /**
- * Checks if a valid icon file exists
- *
+ * Checks if valid icon files exist for every added platform.
+ * @param  {Array} platforms
  * @return {Promise} resolves if exists, rejects otherwise
  */
-var validIconExists = function () {
+var validIconsExist = function (platforms) {
     var deferred = Q.defer();
-    fs.exists(settings.ICON_FILE, function (exists) {
+    var sequence = Q();
+    var all = [];
+    _(platforms).where({ isAdded : true }).forEach(function (platform) {
+        sequence = sequence.then(function () {
+            return validIconExists(platform);
+        });
+        all.push(sequence);
+    });
+    Q.all(all).then(function () {
+        deferred.resolve();
+    });
+    return deferred.promise;
+};
+
+/**
+ * Checks if a valid icon file exists for the given platform.
+ *
+ * @param  {Object} platform
+ * @return {Promise}
+ */
+var validIconExists = function (platform) {
+    var deferred = Q.defer();
+
+    // replace "[platform]" in icon path
+    var iconFilePath = settings.ICON_FILE.replace("[platform]", platform.name);
+
+    fs.exists(iconFilePath, function (exists) {
         if (exists) {
-            display.success(settings.ICON_FILE + ' exists');
+            display.success('Icon for ' + platform.name + ' (' + iconFilePath + ') exists');
             deferred.resolve();
         } else {
-            display.error(settings.ICON_FILE + ' does not exist in the root folder');
+            display.error(iconFilePath + ' does not exist in the root folder');
             deferred.reject();
         }
     });
@@ -230,12 +264,13 @@ var configFileExists = function () {
     return deferred.promise;
 };
 
-display.header('Checking Project & Icon');
+display.header('Checking Project & Icons');
 
 var run = function() {
   return atLeastOnePlatformFound()
-    .then(validIconExists)
     .then(configFileExists)
+    .then(getPlatforms)
+    .then(validIconsExist)
     .then(getProjectName)
     .then(getPlatforms)
     .then(generateIcons)
