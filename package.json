@@ -1,7 +1,7 @@
 {
-  "name": "cordova-icon-gm",
+  "name": "cordova-icon-gm-ma",
   "version": "1.1.4",
-  "description": "Automatic icon resizing for Cordova",
+  "description": "Automatic icon resizing for Cordova >= 6.1.1",
   "main": "index.js",
   "preferGlobal": "true",
   "directories": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:disusered/cordova-icon-gm.git"
+    "url": "git@github.com:moderna/cordova-icon-gm.git"
   },
   "keywords": [
     "cordova",
@@ -21,12 +21,12 @@
     "phonegap",
     "hook"
   ],
-  "author": "Carlos Antonio",
+  "author": "Modern Alchemists",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/disusered/cordova-icon-gm/issues"
+    "url": "https://github.com/moderna/cordova-icon-gm/issues"
   },
-  "homepage": "https://github.com/disusered/cordova-icon-gm",
+  "homepage": "https://github.com/moderna/cordova-icon-gm",
   "dependencies": {
     "colors": "^0.6.2",
     "gm": "^1.17.0",
