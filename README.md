@@ -11,14 +11,14 @@ It uses ImageMagic per default
 
 ### Manual usage
 1. Install ImageMagic binaries from http://www.imagemagick.org/script/binary-releases.php
-2. `npm install https://github.com/moderna/cordova-icon-gm.git --save`
+2. `npm install https://github.com/moderna/cordova-icon-gm-ma.git --save`
 3. Place `icon.png` to a res/3_used_by_cordova/icon/<anroid/io/...> folder of your Cordova project
 4. Run `cordova-icon-gm-ma`.
 
 ### Automated usage
 1. Install ImageMagic binaries from http://www.imagemagick.org/script/binary-releases.php
 
-2. `npm install https://github.com/moderna/cordova-icon-gm.git --save-dev`
+2. `npm install https://github.com/moderna/cordova-icon-gm-ma.git --save-dev`
 
 3. Create `my-icon-hook.js`
     ```javascript
