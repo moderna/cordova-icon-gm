@@ -31,10 +31,10 @@ It uses ImageMagic per default
 
 4. Add hook to `config.xml`
     ```xml
-    <hook src="my-icon-hook.js" type="after_platform_add" />
+    <hook src="my-icon-hook.js" type="after_prepare" />
     ```
 
-That's it. Now every time you `cordova add platform`, the icons will be auto generated.
+That's it. The icons will be auto generated after each prepare event.
 
 ### Requirements
 - GraphicsMagick
